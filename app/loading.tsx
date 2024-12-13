@@ -5,7 +5,7 @@ import { BeatLoader } from "react-spinners";
 function LoadingPage() {
     return (
         <section className="h-[100vh] flex items-center justify-center">
-            <BeatLoader />
+            <BeatLoader color="hsl(var(--muted-foreground))" />
         </section>
     );
 }

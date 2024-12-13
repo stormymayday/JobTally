@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import LoginButton from "@/components/auth/LoginButton";
+import { ModeToggle } from "@/components/mode-toggle";
 
 // Custom font:
 import { Roboto } from "next/font/google";
@@ -22,6 +23,7 @@ export default function Home() {
                     💼 JobTally
                 </h1>
                 <p>Stay on Track, Land the Job.</p>
+                <ModeToggle />
                 <div>
                     <LoginButton mode="modal" asChild>
                         <Button size="lg">Begin</Button>

@@ -3,10 +3,11 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { Toaster } from "@/components/ui/Sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
     title: "JobTally",
-    description: "Manage your job applications with ease!",
+    description: "Job application tracker",
 };
 
 export default async function RootLayout({
@@ -18,10 +19,17 @@ export default async function RootLayout({
 
     return (
         <SessionProvider session={session}>
-            <html lang="en">
+            <html lang="en" suppressHydrationWarning>
                 <body>
-                    <Toaster />
-                    {children}
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <Toaster />
+                        {children}
+                    </ThemeProvider>
                 </body>
             </html>
         </SessionProvider>
