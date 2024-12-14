@@ -14,7 +14,15 @@ import {
     CustomFormSelect,
 } from "@/components/CustomFormInputs";
 
+// React Query Imports
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createJobAction } from "@/actions/createJobAction";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 function CreateJobForm() {
+    const router = useRouter();
+
     // Form instance
     const form = useForm<z.infer<typeof createAndEditJobSchema>>({
         resolver: zodResolver(createAndEditJobSchema),
@@ -27,8 +35,32 @@ function CreateJobForm() {
         },
     });
 
+    // React Query
+    const queryClient = useQueryClient();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: (values: z.infer<typeof createAndEditJobSchema>) =>
+            createJobAction(values),
+        onSuccess: (data) => {
+            if (!data.job) {
+                toast.error(data.error);
+                return;
+            }
+
+            toast.success(data.success);
+
+            queryClient.invalidateQueries({ queryKey: ["jobs"] });
+            queryClient.invalidateQueries({ queryKey: ["stats"] });
+            queryClient.invalidateQueries({ queryKey: ["charts"] });
+
+            router.push("/jobs");
+            // form.reset();
+        },
+    });
+
     function onSubmit(values: z.infer<typeof createAndEditJobSchema>) {
-        console.log(values);
+        // console.log(values);
+        mutate(values);
     }
 
     return (
@@ -63,9 +95,12 @@ function CreateJobForm() {
                         labelText="job mode"
                         items={Object.values(JobMode)}
                     />
-
-                    <Button type="submit" className="self-end capitalize">
-                        create job
+                    <Button
+                        type="submit"
+                        className="self-end capitalize"
+                        disabled={isPending}
+                    >
+                        {isPending ? "creating..." : "create job"}
                     </Button>
                 </div>
             </form>
