@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { UserRole } from "@prisma/client";
+import { JobStatus, JobMode } from "@/types";
 
 export const LoginSchema = z.object({
     email: z.string().email({
@@ -77,3 +78,26 @@ export const SettingsSchema = z
             path: ["password"],
         }
     );
+
+export const createAndEditJobSchema = z.object({
+    position: z
+        .string()
+        .min(2, {
+            message: "position must be at least 2 characters.",
+        })
+        .trim(),
+    company: z
+        .string()
+        .min(2, {
+            message: "company must be at least 2 characters.",
+        })
+        .trim(),
+    location: z
+        .string()
+        .min(2, {
+            message: "location must be at least 2 characters.",
+        })
+        .trim(),
+    status: z.nativeEnum(JobStatus),
+    mode: z.nativeEnum(JobMode),
+});
