@@ -101,3 +101,10 @@ export const createAndEditJobSchema = z.object({
     status: z.nativeEnum(JobStatus),
     mode: z.nativeEnum(JobMode),
 });
+
+export const jobSearchFormSchema = z.object({
+    searchTerm: z.optional(z.string()),
+    jobStatus: z.optional(z.string()),
+    page: z.optional(z.number()),
+    limit: z.optional(z.number()),
+});
