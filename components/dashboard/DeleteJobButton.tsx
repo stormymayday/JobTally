@@ -35,7 +35,7 @@ function DeleteJobBtn({ id }: DeleteJobBtnProps) {
                 mutate(id);
             }}
         >
-            {isPending ? "deleting..." : "delete"}
+            {isPending ? "Deleting..." : "Delete"}
         </Button>
     );
 }

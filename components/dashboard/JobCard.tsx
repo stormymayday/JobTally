@@ -1,6 +1,13 @@
 import { Job } from "@prisma/client";
 import Link from "next/link";
-import { MapPin, Briefcase, CalendarDays, RadioTower } from "lucide-react";
+import {
+    MapPin,
+    Briefcase,
+    CalendarDays,
+    RadioTower,
+    PencilLine,
+    Trash2,
+} from "lucide-react";
 import {
     Card,
     CardContent,
@@ -63,29 +70,33 @@ function JobCard({ job }: JobCardProps) {
             </CardContent>
             <CardFooter className="flex gap-4">
                 <Button asChild size="sm">
-                    <Link href={`/jobs/${job.id}`}>edit</Link>
+                    <Link href={`/jobs/${job.id}`}>
+                        <PencilLine />
+                        Edit
+                    </Link>
                 </Button>
-                <Button size="sm">
-                    <AlertDialog>
-                        <AlertDialogTrigger>delete</AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Are you sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction>
-                                    <DeleteJobButton id={job.id} />
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </Button>
+                <AlertDialog>
+                    <Button asChild size="sm">
+                        <AlertDialogTrigger>
+                            <Trash2 />
+                            Delete
+                        </AlertDialogTrigger>
+                    </Button>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction asChild>
+                                <DeleteJobButton id={job.id} />
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </CardFooter>
         </Card>
     );
