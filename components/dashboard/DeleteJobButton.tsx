@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/Button";
+
 function DeleteJobButton() {
-    return <h1 className="text-4xl">Delete Job Button</h1>;
+    return <Button size="sm">Delete Job Button</Button>;
 }
 export default DeleteJobButton;
