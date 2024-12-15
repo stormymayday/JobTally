@@ -7,14 +7,14 @@ import { Job, Prisma } from "@prisma/client";
 import { currentUser } from "@/utils/server-current-user/currentUser";
 
 type getAllJobsActionType = {
-    searchTerm?: string;
+    search?: string;
     jobStatus?: string;
     page?: number;
     limit?: number;
 };
 
 export async function getAllJobsAction({
-    searchTerm = "",
+    search = "",
     jobStatus = "all",
     page = 1,
     limit = 10,
@@ -48,20 +48,20 @@ export async function getAllJobsAction({
             userId: user.id,
         };
 
-        // 2. If the searchTerm was provided, check if position or company contains it
-        if (searchTerm) {
+        // 2. If the search term was provided, check if position or company contains it
+        if (search) {
             whereClause = {
                 ...whereClause,
                 OR: [
                     {
                         position: {
-                            contains: searchTerm,
+                            contains: search,
                             mode: "insensitive",
                         },
                     },
                     {
                         company: {
-                            contains: searchTerm,
+                            contains: search,
                             mode: "insensitive",
                         },
                     },
