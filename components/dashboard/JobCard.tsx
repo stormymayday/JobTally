@@ -12,6 +12,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { JobStatus } from "@/types";
 
 import JobInfo from "@/components/dashboard/JobInfo";
 import DeleteJobButton from "@/components/dashboard/DeleteJobButton";
@@ -34,7 +46,15 @@ function JobCard({ job }: JobCardProps) {
                 <JobInfo icon={<Briefcase />} text={job.mode} />
                 <JobInfo icon={<MapPin />} text={job.location} />
                 <JobInfo icon={<CalendarDays />} text={date} />
-                <Badge className="w-32  justify-center">
+                <Badge
+                    className={`w-32 justify-center ${
+                        job.status === JobStatus.Pending
+                            ? "bg-blue-500 hover:bg-blue-600"
+                            : job.status === JobStatus.Interview
+                            ? "bg-green-500 hover:bg-green-600"
+                            : "bg-primary"
+                    }`}
+                >
                     <JobInfo
                         icon={<RadioTower className="w-4 h-4" />}
                         text={job.status}
@@ -45,7 +65,27 @@ function JobCard({ job }: JobCardProps) {
                 <Button asChild size="sm">
                     <Link href={`/jobs/${job.id}`}>edit</Link>
                 </Button>
-                <DeleteJobButton />
+                <Button size="sm">
+                    <AlertDialog>
+                        <AlertDialogTrigger>delete</AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Are you sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction>
+                                    <DeleteJobButton id={job.id} />
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </Button>
             </CardFooter>
         </Card>
     );
