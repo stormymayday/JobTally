@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { getAllJobsAction } from "@/actions/getAllJobsAction";
 import { useQuery } from "@tanstack/react-query";
 import { BeatLoader } from "react-spinners";
+import ButtonContainer from "@/components/dashboard/ButtonContainer";
 
 function JobsList() {
     // Invoking useSearchParams to have access to the query parameters in the URL
@@ -26,6 +27,10 @@ function JobsList() {
     // Extracting jobs if they exist. Otherwise, providing an empty array
     const jobs = data?.jobs || [];
 
+    const count = data?.count || 0;
+    const page = data?.page || 0;
+    const totalPages = data?.totalPages || 0;
+
     // Loading
     if (isPending) {
         return (
@@ -41,6 +46,18 @@ function JobsList() {
     return (
         <>
             {/* pagination container  */}
+            <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-semibold capitalize">
+                    {count} jobs found
+                </h2>
+                {totalPages < 2 ? null : (
+                    <ButtonContainer
+                        currentPage={page}
+                        totalPages={totalPages}
+                    />
+                )}
+            </div>
+
             <div className="grid md:grid-cols-2  gap-8">
                 {jobs.map((job) => {
                     return <JobCard key={job.id} job={job} />;

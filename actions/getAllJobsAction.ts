@@ -39,8 +39,6 @@ export async function getAllJobsAction({
         };
     }
 
-    console.log(page, limit);
-
     try {
         // Constructing where clause:
         // 1. attaching the use ID
@@ -77,24 +75,34 @@ export async function getAllJobsAction({
             };
         }
 
+        const skip = (page - 1) * limit;
+
         const jobs: Job[] = await db.job.findMany({
             where: whereClause,
+            skip,
+            take: limit,
             orderBy: {
                 createdAt: "desc",
             },
         });
 
-        // return { jobs: jobs, count: 0, page: 1, totalPages: 0 };
+        // Getting number of jobs based on whereClause
+        const count: number = await db.job.count({
+            where: whereClause,
+        });
+
+        // Calculating total number of pages
+        const totalPages = Math.ceil(count / limit);
+
         return {
             jobs: jobs,
-            count: 0,
-            page: 1,
-            totalPages: 0,
+            count: count,
+            page: page,
+            totalPages: totalPages,
             successMessage: "Jobs fetched",
             errorMessage: "",
         };
     } catch {
-        // return { jobs: [], count: 0, page: 0, totalPages: 0 };
         return {
             jobs: [],
             count: 0,
