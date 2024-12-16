@@ -3,65 +3,76 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import { createAndEditJobSchema } from "@/schemas";
+
+import { JobStatus, JobMode } from "@/types";
 
 import { Button } from "@/components/ui/Button";
 import { Form } from "@/components/ui/Form";
-import { JobStatus, JobMode } from "@/types";
+
 import {
     CustomFormInput,
     CustomFormSelect,
 } from "@/components/dashboard/CustomFormInputs";
 
-// React Query Imports
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createJobAction } from "@/actions/createJobAction";
-import { toast } from "sonner";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+
+import { getSingleJobAction } from "@/actions/getSingleJobAction";
+import { updateJobAction } from "@/actions/updateJobAction";
 
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { notFound } from "next/navigation";
 
-function CreateJobForm() {
+function EditJobForm({ jobId }: { jobId: string }) {
+    const queryClient = useQueryClient();
     const router = useRouter();
 
-    // Form instance
-    const form = useForm<z.infer<typeof createAndEditJobSchema>>({
-        resolver: zodResolver(createAndEditJobSchema),
-        defaultValues: {
-            position: "",
-            company: "",
-            location: "",
-            status: JobStatus.Pending,
-            mode: JobMode.FullTime,
-        },
+    // Accessing prefetched data
+    const { data } = useQuery({
+        queryKey: ["job", jobId],
+        queryFn: () => getSingleJobAction(jobId),
     });
 
-    // React Query
-    const queryClient = useQueryClient();
-
+    // Updating the job
     const { mutate, isPending } = useMutation({
         mutationFn: (values: z.infer<typeof createAndEditJobSchema>) =>
-            createJobAction(values),
+            updateJobAction(jobId, values),
         onSuccess: (data) => {
             if (!data.job) {
-                toast.error(data.error);
+                toast(data.error);
                 return;
             }
-
-            toast.success(data.success);
+            toast(data.success);
 
             queryClient.invalidateQueries({ queryKey: ["jobs"] });
+            queryClient.invalidateQueries({ queryKey: ["job", jobId] });
             queryClient.invalidateQueries({ queryKey: ["stats"] });
-            queryClient.invalidateQueries({ queryKey: ["charts"] });
 
             router.push("/jobs");
             // form.reset();
         },
     });
 
+    // Defining the form
+    const form = useForm<z.infer<typeof createAndEditJobSchema>>({
+        resolver: zodResolver(createAndEditJobSchema),
+        defaultValues: {
+            position: data?.job?.position || "",
+            company: data?.job?.company || "",
+            location: data?.job?.location || "",
+            status: (data?.job?.status as JobStatus) || JobStatus.Pending,
+            mode: (data?.job?.mode as JobMode) || JobMode.FullTime,
+        },
+    });
+
+    // Submit handler
     function onSubmit(values: z.infer<typeof createAndEditJobSchema>) {
-        // console.log(values);
         mutate(values);
+    }
+
+    if (!data?.job) {
+        return notFound();
     }
 
     return (
@@ -71,9 +82,8 @@ function CreateJobForm() {
                 className="bg-muted p-8 rounded"
             >
                 <h2 className="capitalize font-semibold text-4xl mb-6">
-                    add job
+                    edit job
                 </h2>
-                {/* Grid Layout */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-start">
                     {/* position */}
                     <CustomFormInput name="position" control={form.control} />
@@ -96,16 +106,17 @@ function CreateJobForm() {
                         labelText="job mode"
                         items={Object.values(JobMode)}
                     />
+
                     <Button
                         type="submit"
                         className="self-end capitalize"
                         disabled={isPending}
                     >
-                        {isPending ? "creating..." : "create job"}
+                        {isPending ? "updating..." : "edit job"}
                     </Button>
                 </div>
             </form>
         </Form>
     );
 }
-export default CreateJobForm;
+export default EditJobForm;

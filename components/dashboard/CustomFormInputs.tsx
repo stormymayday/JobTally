@@ -13,7 +13,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/Form";
-import { Input } from "./ui/Input";
+import { Input } from "@/components/ui/Input";
 
 type CustomFormInputProps = {
     name: string;
