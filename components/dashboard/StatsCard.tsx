@@ -25,16 +25,16 @@ function StatsCard({ title, value }: StatsCardsProps) {
     );
 }
 
-export function StatsLoadingCard() {
+export function StatsSkeletonCard() {
     return (
-        <Card className="w-[330px] h-[88px]">
+        <Card className="bg-muted">
             <CardHeader className="flex flex-row justify-between items-center">
-                <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
+                <div className="w-full flex items-center justify-between">
                     <div className="space-y-2">
-                        <Skeleton className="h-4 w-[150px]" />
-                        <Skeleton className="h-4 w-[100px]" />
+                        <Skeleton className="h-4 w-[10rem]" />
+                        <Skeleton className="h-4 w-[5rem]" />
                     </div>
+                    <Skeleton className="h-12 w-12 rounded-full" />
                 </div>
             </CardHeader>
         </Card>
