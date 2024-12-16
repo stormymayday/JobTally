@@ -31,7 +31,7 @@ export function StatsSkeletonCard() {
             <CardHeader className="flex flex-row justify-between items-center">
                 <div className="w-full flex items-center justify-between">
                     <div className="space-y-2">
-                        <Skeleton className="h-4 w-[10rem]" />
+                        {/* <Skeleton className="h-4 w-[10rem]" /> */}
                         <Skeleton className="h-4 w-[5rem]" />
                     </div>
                     <Skeleton className="h-12 w-12 rounded-full" />

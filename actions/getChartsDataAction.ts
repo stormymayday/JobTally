@@ -35,7 +35,7 @@ export async function getChartsDataAction(): Promise<{
         });
 
         const applicationsPerMonth = jobs.reduce((acc, job) => {
-            const date = dayjs(job.createdAt).format("MMM YY");
+            const date = dayjs(job.createdAt).format("MMM YYYY");
 
             const existingEntry = acc.find((entry) => entry.date === date);
 
