@@ -22,7 +22,7 @@ export async function deleteJobAction(
         });
 
         // return job;
-        return { job: job, success: "Job deleted", error: "" };
+        return { job: job, success: "Job application deleted", error: "" };
     } catch {
         // return null;
         return { job: null, success: "", error: "Something went wrong!" };
